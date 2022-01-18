@@ -35,7 +35,7 @@ def main(reddit):
     comments = filter(
         longer_than_wordcount,
         takewhile(
-            newer_than(days=7), reddit.subreddit(config.subreddit).comments(limit=1000)
+            newer_than(days=int(config.days)), reddit.subreddit(config.subreddit).comments(limit=1000)
         ),
     )
 
