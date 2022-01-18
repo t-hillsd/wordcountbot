@@ -32,32 +32,42 @@ def longer_than_wordcount(comment):
 
 
 def main(reddit):
-    comments = filter(longer_than_wordcount,
-                        takewhile(newer_than(days=7),
-                                  reddit.subreddit(config.subreddit).comments(limit=1000)))
+    comments = filter(
+        longer_than_wordcount,
+        takewhile(
+            newer_than(days=7), reddit.subreddit(config.subreddit).comments(limit=1000)
+        ),
+    )
 
-    submission_title = "{} Long Comments of the Week".format(datetime.date.today().strftime("%a %w %b"))
-    submission_body = SUBMISSION_BODY.format(days=int(config.days),
-                                             word_count=config.word_count)
+    submission_title = "{} Long Comments of the Week".format(
+        datetime.date.today().strftime("%a %w %b")
+    )
+    submission_body = SUBMISSION_BODY.format(
+        days=int(config.days), word_count=config.word_count
+    )
     for comment in comments:
         ago = humanize.naturalday(datetime.datetime.fromtimestamp(comment.created_utc))
 
-        submission_body += SUBMISSION_LINK.format(name=comment.author.name if comment.author else "Deleted",
-                                                  permalink=comment.permalink,
-                                                  ago=ago)
+        submission_body += SUBMISSION_LINK.format(
+            name=comment.author.name if comment.author else "Deleted",
+            permalink=comment.permalink,
+            ago=ago,
+        )
 
     Console().print(Syntax(submission_body, "md"))
     if int(config.check_before_posting):
-        post = Prompt.ask(f"Are you sure you want to post this to /r/{config.subreddit}?",
-                        choices=["y", "n"],
-                        default="y")
+        post = Prompt.ask(
+            f"Are you sure you want to post this to /r/{config.subreddit}?",
+            choices=["y", "n"],
+            default="y",
+        )
         if post == "n":
             log.debug("Did nothing!")
             return
 
     submission = reddit.subreddit(config.subreddit).submit(
-                    title=submission_title,
-                    selftext=submission_body)
+        title=submission_title, selftext=submission_body
+    )
     if int(config.make_sticky):
         submission.mod.sticky(state=True)
     log.debug(f"Done post at: {submission.url}")
