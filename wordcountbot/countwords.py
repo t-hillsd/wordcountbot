@@ -11,7 +11,7 @@ log = logging.getLogger("wordcountbot")
 
 
 SUBMISSION_BODY = "In the last {days} days, the following comments were longer than {word_count} words:\n\n"
-SUBMISSION_LINK = "- **[{name}](https://reddit.com{permalink})** @ {ago}\n"
+SUBMISSION_LINK = "- **[{name}](https://reddit.com{permalink})** in **{title}** @ {ago}\n"
 
 
 def newer_than(days):
@@ -52,6 +52,7 @@ def main(reddit):
         submission_body += SUBMISSION_LINK.format(
             name=comment.author.name if comment.author else "Deleted",
             permalink=comment.permalink,
+            title=comment.submission.title,
             ago=ago,
         )
 
