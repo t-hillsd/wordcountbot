@@ -22,8 +22,6 @@ from . import config
 config.setup_config()
 from .config import config
 
-config["user_agent"] = f"script:WordCountBot:v{config.version} (by /u/thillsd)"
-
 
 import praw
 from .countwords import main
