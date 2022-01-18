@@ -39,8 +39,9 @@ def main(reddit):
         ),
     )
 
-    submission_title = "{} Long Comments of the Week".format(
-        datetime.date.today().strftime("%a %w %b")
+    submission_title = "[{}-{}] Our Longest Comments".format(
+        (datetime.date.today() - datetime.timedelta(days=int(config.days))).strftime("%d %b"),
+        datetime.date.today().strftime("%d %b")
     )
     submission_body = SUBMISSION_BODY.format(
         days=int(config.days), word_count=config.word_count
@@ -54,6 +55,7 @@ def main(reddit):
             ago=ago,
         )
 
+    logging.debug(f"Title: {submission_title!r}")
     Console().print(Syntax(submission_body, "md"))
     if int(config.check_before_posting):
         post = Prompt.ask(
