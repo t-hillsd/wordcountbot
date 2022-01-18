@@ -41,7 +41,8 @@ def main(reddit):
                                              word_count=config.word_count)
     for comment in comments:
         ago = humanize.naturalday(datetime.datetime.fromtimestamp(comment.created_utc))
-        submission_body += SUBMISSION_LINK.format(name=comment.author.name,
+
+        submission_body += SUBMISSION_LINK.format(name=comment.author.name if comment.author else "Deleted",
                                                   permalink=comment.permalink,
                                                   ago=ago)
 
